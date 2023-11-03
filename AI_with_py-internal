@@ -1,0 +1,579 @@
+3] Write Python program to Implement Data Preparation using techniques like data Aggregation on dataset
+1) Installation packages , Loading Dataset , Show data frame			  	 			
+2) Data Aggregation function  (sum , min, max, std, mean,describe ,count)  
+
+
+(1)import pandas as pd
+data=pd.read_csv('abc.csv')
+print(data)
+
+data=pd.DataFrame(data)
+
+print(data.sum())
+
+print(data.min())
+
+print(data.std())
+
+print(data.mean())
+
+print(data.max())
+
+print(data.count())
+
+print(data.describe())
+
+print(data.describe().transpose())
+
+
+
+
+
+
+
+
+4] Write Python program to Implement Data Preparation using techniques like Handling missing values, Feature Scaling on dataset
+1) Installation packages , Loading Dataset , Show data frame , 	Handling missing values	  	 		
+2) Feature Scaling( using min max scaler , standard scaler ) 	  
+
+(1)import  pandas as pd
+data = pd.read_csv('abc.csv')
+data
+
+data['price'] = data['price'].fillna(data['price'].mean())
+data
+
+data['price'] = data['price'].fillna(data['price'].median())
+data
+
+data['price'] = data['price'].fillna(data['price'].std())
+data
+
+data['price'] = data['price'].fillna(data['price'].max())
+data
+
+data['price'] = data['price'].fillna(data['price'].min())
+data
+
+	 		
+2) # Feature Scalin
+import pandas as pd
+import numpy as np
+
+from pandas import read_csv
+from numpy import set_printoptions
+from sklearn import preprocessing
+data = 'pima-indians-diabetes.data.csv'
+names = ['A','B','C','D','E','F','G','H','I']
+a = read_csv(data, names=names)
+a
+
+
+
+
+
+
+
+5] Write Python program to Implement feature selection using technique univariate selection, correlation heatmaps on dataset
+1) Installation packages , Loading Dataset , Show data frame , 	Univariate selection using SelectKBest ,Chi2 	 
+2) Feature Selection( Show features score , plot correlation matrix with heatmaps ) on given dataset	
+
+(2)import pandas as pd
+import numpy as np
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+data = pd.read_csv("train.csv")
+X = data.iloc[:,0:20]
+y = data.iloc[:,-1]
+
+bestfeatures = SelectKBest(score_func=chi2, k=10)
+fit = bestfeatures.fit(X,y)
+
+dfscores = pd.DataFrame(fit.scores_)
+dfcolumns = pd.DataFrame(X.columns)
+
+featureScores = pd.concat([dfcolumns,dfscores],axis=1)
+featureScores.columns = ['Specs','Score']
+
+featureScores
+
+print(featureScores.nlargest(10,'Score'))
+
+from sklearn.ensemble import ExtraTreesClassifier
+import matplotlib.pyplot as plt
+model = ExtraTreesClassifier()
+model.fit(X,y)
+
+feat_importances = pd.Series(model.feature_importances_, index=X.columns)
+feat_importances.nlargest(10).plot(kind='barh')
+plt.show()
+
+import seaborn as sns
+corrmat = data.corr()
+top_corr_features = corrmat.index
+plt.figure(figsize=(20,20))
+g=sns.heatmap(data[top_corr_features].corr(),annot=True,cmap="RdYlGn")
+
+
+
+
+
+
+
+
+
+
+
+6] Write Python program to Implement feature engineering technique like one hot encoding ,outlier management on dataset
+1) Installation packages , Loading Dataset , Show data frame ,	detect outlier					
+2) one hot encoding (convert text-based values into numeric values) 	
+
+(2)import pandas as pd
+df = pd.read_csv("team.csv")
+df
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+dfle = df
+dfle.TEAM = le.fit_transform(dfle.TEAM)
+dfle
+
+from sklearn.preprocessing import OneHotEncoder
+import numpy as np
+import pandas as pd
+# creating one hot encoder object
+enc = OneHotEncoder()
+enc_df = pd.DataFrame(enc.fit_transform(dfle[['TEAM']]).toarray())
+enc_df
+
+abc = dfle.join(enc_df)
+abc
+
+final = abc.drop(['TEAM'], axis='columns')
+final
+
+
+
+
+
+
+
+
+7] Write Python program to Implement logistic regression classifier on dataset
+1) Installation packages , Loading Dataset , Show data frame  .							 
+2) Implement logistic regression classifier with score	
+
+(2)import pandas as pd
+df = pd.read_csv("abcde.csv")
+df.head(10)
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(df[['age']],df.results,train_size=0.8,random_state=10)
+
+from sklearn.linear_model import LogisticRegression
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+y_predicted = model.predict(X_test)
+y_predicted
+
+model.score(X_test,y_test)
+
+
+
+
+
+
+
+
+
+
+8] Write Python program to Implement Naïve Bayes classifier on dataset
+1) Installation packages , Loading breast_cancer dataset from sklearn , Show data frame .		
+2) Implement Naïve Bayes classifier using GaussianNB model and predict value.
+
+
+(1)#  import libraries
+
+import numpy as np
+import pandas as pd
+
+from sklearn.datasets import load_breast_cancer
+data = load_breast_cancer()
+
+data.data
+
+data.target
+
+data.target_names
+
+df = pd.DataFrame(np.c_[data.data, data.target], columns=[list(data.feature_names)+['target']])
+df.head()
+
+df.tail()
+
+df.shape
+
+#Split Data
+X = df.iloc[:, 0:-1]
+y = df.iloc[:, -1]
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=2020)
+
+print('Shape of X_train = ', X_train.shape)
+print('Shape of y_train = ', y_train.shape)
+print('Shape of X_test = ', X_test.shape)
+print('Shape of y_test = ', y_test.shape)
+
+
+
+
+(2)## Train Naive Bayes Classifier Model : GaussianNB
+
+from sklearn.naive_bayes import GaussianNB
+classifier = GaussianNB()
+classifier.fit(X_train, y_train)
+classifier.score(X_test, y_test)
+
+## Train Naive Bayes Classifier Model : MultinomialNB
+
+from sklearn.naive_bayes import MultinomialNB
+classifier_m = MultinomialNB()
+classifier_m.fit(X_train, y_train)
+classifier_m.score(X_test, y_test)
+
+## Train Naive Bayes Classifier Model : BernoulliNB
+
+from sklearn.naive_bayes import BernoulliNB
+classifier_b = BernoulliNB()
+classifier_b.fit(X_train, y_train)
+classifier_b.score(X_test, y_test)
+
+patient1 = np.array([patient1]) #convert 2d data
+patient1
+
+classifier.predict(patient1)
+
+data.target_names
+
+pred = classifier.predict(patient1)
+
+if pred[0] == 0:
+    print('Patient has Cancer (malignant tumor)')
+else:
+    print('Patient has no Cancer (malignant benign)')
+
+
+
+
+
+
+
+
+
+
+
+9] Write Python program to use of confusion matrixes to describe performance of classifier on dataset
+1) Installation packages , Loading dataset, Show data frame , Create confusion_matrix			
+2) Describe accuracy_score, precision_score, recall_score, f1_score using confusion matrix
+
+(2)from sklearn.metrics import confusion_matrix,classification_report
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+actual = [1,0,1,1,0,1,0,0,1,0]
+predicted = [1,0,1,0,1,1,0,1,1,0]
+
+confusion_mat = confusion_matrix(actual,predicted)
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(confusion_mat, annot=True, fmt ='d',cmap='Blues',
+            xticklabels=['Predicted 0','predicted 1'],
+            yticklabels=['Actual 0','Actual 1'])
+
+plt.xlabel('predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()
+
+print(classification_report(actual,predicted))
+
+
+
+
+
+
+
+
+10] Write Python program to implement classifier using support vector machines.
+1) Installation packages , Loading dataset, Show data frame, Create confusion_matrix			10M
+2) Visualizing the train, test  result in colormap & Show classification report	
+
+
+(2)import pandas as pd
+from sklearn.datasets import load_iris
+iris = load_iris()
+df = pd.DataFrame(iris.data,columns=iris.feature_names)
+df.head()
+
+df['target'] = iris.target
+df.head()
+
+from sklearn.model_selection import train_test_split
+X = df.drop(['target'], axis='columns')
+y = df.target
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,random_state=10)
+from sklearn.svm import SVC
+model = SVC()
+model.fit(X_train, y_train)
+
+model.score(X_test, y_test)
+
+model.predict([[5.1,3.7,2.5,0.9]])
+
+
+
+
+
+
+
+
+11] Write Python program to Build a decision tree classifier .
+1) Installation packages , Loading dataset, Show data frame, Build a decision tree classifier 			10M
+2) Evaluate performance of a classifier by printing classification report.	
+
+
+(2)import pandas as pd
+import numpy as np
+from sklearn.datasets import load_iris
+data = load_iris()
+
+x = data.data
+y = data.target
+
+data.feature_names
+
+data.target_names
+
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x,y,test_size = 0.2, random_state=0)
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier
+sc = DecisionTreeClassifier(criterion = 'entropy')
+sc.fit(x_train, y_train)
+
+y_pred =sc.predict(x_test)
+
+from sklearn.metrics import confusion_matrix,accuracy_score, classification_report
+
+
+print(confusion_matrix(y_test,y_pred))
+print("Accuracy score", accuracy_score(y_test, y_pred))
+
+print(classification_report(y_test,y_pred))
+
+
+
+
+
+
+
+
+
+12] Write Python program to Build random forest on dataset
+1) Installation packages , Loading dataset, Show data frame, Fitting Decision Tree classifier to the training set random forest														
+2) Visualizing the train/test set result & printing classification report.
+
+(2)# importing libraries
+import numpy as nm
+import matplotlib.pyplot as mtp
+import pandas as pd
+from sklearn import metrics
+
+#importing datasets
+data_set= pd.read_csv('user_data.csv')
+
+#Extracting Independent and dependent Variable
+x= data_set.iloc[:, [2,3]].values
+y= data_set.iloc[:, 4].values
+
+# Splitting the dataset into training and test set.
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test= train_test_split(x, y, test_size= 0.25, random_state=0)
+
+#feature Scaling
+from sklearn.preprocessing import StandardScaler
+st_x= StandardScaler()
+x_train= st_x.fit_transform(x_train)
+x_test= st_x.transform(x_test)
+
+
+
+data_set
+
+#Fitting Decision Tree classifier to the training set random forest
+from sklearn.ensemble import RandomForestClassifier
+classifier= RandomForestClassifier(n_estimators= 10, criterion="entropy")
+classifier.fit(x_train, y_train)
+
+#Predicting the test set result
+y_pred= classifier.predict(x_test)
+
+y_pred
+
+#Now we will create the confusion matrix to determine the correct and incorrect predictions.
+#Creating the Confusion matrix
+from sklearn.metrics import confusion_matrix
+cm= confusion_matrix(y_test, y_pred)
+
+cm
+
+accuracy = metrics.accuracy_score(y_test,y_pred)
+report = metrics.classification_report(y_test,y_pred)
+cm = metrics.confusion_matrix(y_test,y_pred)
+print("Classification report:")
+print("Accuracy: ", accuracy)
+print(report)
+print("Confusion matrix:")
+print(cm)
+
+
+
+
+
+
+
+
+23] Write Python program to implement K-Means for clustering on dataset.
+1) Installation packages , Loading dataset, Show data frame, implement k-Means Clustering		   
+2) visualizing cluster & generate the centroids of our clusters.	
+(2)from sklearn.cluster import KMeans
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+from matplotlib import pyplot as plt
+df = pd.read_csv("Book1 (1).csv")
+df.head()
+
+plt.scatter(df.rollno,df['marks'])
+plt.xlabel('rollno')
+plt.ylabel('marks')
+
+km = KMeans(n_clusters=3)
+predicted = km.fit_predict(df[['rollno','marks']])
+predicted
+
+df['cluster']=predicted
+df.head()
+df1 = df[df.cluster==0]
+df2 = df[df.cluster==1]
+df3 = df[df.cluster==2]
+plt.scatter(df1.rollno,df1['marks'],color='green')
+plt.scatter(df2.rollno,df2['marks'],color='red')
+plt.scatter(df3.rollno,df3['marks'],color='blue')
+plt.xlabel('rollno')
+plt.ylabel('marks')
+
+scale = MinMaxScaler()
+scale.fit(df[['marks']])
+df['marks'] = scale.transform(df[['marks']])
+scale.fit(df[['rollno']])
+df['rollno'] = scale.transform(df[['rollno']])
+
+km = KMeans(n_clusters=3)
+predicted = km.fit_predict(df[['rollno','marks']])
+predicted
+
+df = df.drop(['cluster'], axis='columns')
+df['cluster']=predicted
+df.head()
+
+df1 = df[df.cluster==0]
+df2 = df[df.cluster==1]
+df3 = df[df.cluster==2]
+plt.scatter(df1.rollno,df1['marks'],color='green')
+plt.scatter(df2.rollno,df2['marks'],color='red')
+plt.scatter(df3.rollno,df3['marks'],color='blue')
+plt.xlabel('rollno')
+plt.ylabel('marks')
+
+
+km.cluster_centers_
+
+plt.scatter(df1.rollno,df1['marks'],color='green')
+plt.scatter(df2.rollno,df2['marks'],color='red')
+plt.scatter(df3.rollno,df3['marks'],color='blue')
+plt.scatter(km.cluster_centers_[:,0],km.cluster_centers_[:,1],color='black',marker='*')
+plt.xlabel('rollno')
+plt.ylabel('marks')
+
+
+
+
+
+
+
+
+14] Write Python program to implement  K-NN classifier (KNeighborsClassifier) on dataset
+1) Installation packages , Loading dataset, Show data frame, Fitting K-NN classifier.			     10M
+2) Visualizing the train/test set result & printing classification report.
+
+(2)# importing libraries
+import numpy as nm
+import matplotlib.pyplot as mtp
+import pandas as pd
+from sklearn import metrics
+
+#importing datasets
+data_set= pd.read_csv('user_data.csv')
+
+#Extracting Independent and dependent Variable
+x= data_set.iloc[:, [2,3]].values
+y= data_set.iloc[:, 4].values
+
+# Splitting the dataset into training and test set.
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test= train_test_split(x, y, test_size= 0.25, random_state=0)
+
+#feature Scaling
+from sklearn.preprocessing import StandardScaler
+st_x= StandardScaler()
+x_train= st_x.fit_transform(x_train)
+x_test= st_x.transform(x_test)
+
+
+
+
+data_set
+
+x_test
+
+y_test
+
+#Fitting K-NN classifier to the training set
+from sklearn.neighbors import KNeighborsClassifier
+classifier= KNeighborsClassifier(n_neighbors=5, metric='minkowski', p=2 )
+classifier.fit(x_train, y_train)
+
+#Predicting the test set result
+y_pred= classifier.predict(x_test)
+
+y_pred
+
+#Now we will create the Confusion Matrix for our K-NN model to see the accuracy of the classifier. Below is the
+#Creating the Confusion matrix
+from sklearn.metrics import confusion_matrix
+cm= confusion_matrix(y_test, y_pred)
+
+cm
+
+accuracy = metrics.accuracy_score(y_test,y_pred)
+report = metrics.classification_report(y_test,y_pred)
+cm = metrics.confusion_matrix(y_test,y_pred)
+print("Classification report:")
+print("Accuracy: ", accuracy)
+print(report)
+print("Confusion matrix:")
+print(cm)
+
+
